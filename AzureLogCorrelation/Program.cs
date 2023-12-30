@@ -1,10 +1,16 @@
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.AspNetCore.HttpLogging;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddApplicationInsightsTelemetry();
+builder
+    .Services.AddOpenTelemetry()
+    .UseAzureMonitor(options =>
+    {
+        options.ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
+    });
 builder.Services.AddHttpLogging(options =>
 {
     options.LoggingFields = HttpLoggingFields.All;
